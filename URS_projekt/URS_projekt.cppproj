@@ -229,6 +229,12 @@
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="SPI_Master_C_file.C">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SPI_Master_H_file.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AVR_UTFT" />
