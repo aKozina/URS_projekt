@@ -142,9 +142,10 @@ void krizicDrawBoard() {
 	display.fillRect(BOARD_X1, BORDER_Y1, BOARD_X2, BORDER_Y1 + BORDER_WIDTH);
 	display.fillRect(BOARD_X1, BORDER_Y2, BOARD_X2, BORDER_Y2 + BORDER_WIDTH);
 
-	display.print("Rezultat: X - O", HI_X, TOP_TEXT_Y);
-	display.printNumI(xWins, CENTER, SCORE_Y);
-	display.printNumI(oWins, CENTER, SCORE_Y + 6);
+	display.print("X:", HI_X, TOP_TEXT_Y);
+	display.printNumI(xWins, HI_X + 10, TOP_TEXT_Y);
+	display.print("O:", HI_X, TOP_TEXT_Y - 20);
+	display.printNumI(oWins, HI_X + 10, TOP_TEXT_Y - 20);
 }
 
 void simonBlinkTile(uint8_t tileNumber) {
