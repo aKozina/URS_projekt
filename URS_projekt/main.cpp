@@ -52,6 +52,7 @@
 #define GAME_LENGTH 255
 
 uint8_t tileSequence[GAME_LENGTH], highscore = 0, steps = 1;
+UTFT display;
 
 bool isTouched() {
 	// PINB2 low = touched
@@ -105,6 +106,43 @@ void drawBoard() {
 	display.printNumI(0, CENTER, SCORE_Y);
 }
 
+void blinkTile(uint8_t tileNumber) {
+	switch (tileNumber) {
+		case 0:
+		display.setColor(0, 255, 0);
+		display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
+		_delay_ms(GAME_SPEED);
+		display.setColor(0, 128, 0);
+		display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
+		break;
+		
+		case 1:
+		display.setColor(255, 0, 0);
+		display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
+		_delay_ms(GAME_SPEED);
+		display.setColor(128, 0, 0);
+		display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
+		break;
+		
+		case 2:
+		display.setColor(255, 255, 0);
+		display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);
+		_delay_ms(GAME_SPEED);
+		display.setColor(128, 128, 0);
+		display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);
+		break;
+		
+		case 3:
+		display.setColor(0, 0, 255);
+		display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2);
+		_delay_ms(GAME_SPEED);
+		display.setColor(0, 0, 128);
+		display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2);
+		break;
+	}
+}
+
+
 void newSequence(uint8_t steps) {
 	display.setColor(0, 0, 0);
 	display.fillRect(GREEN_X1 - 5, 0, RED_X2 + 5, RED_Y1 - 1); // Brisanje prethodnog broja koraka
@@ -118,42 +156,6 @@ void newSequence(uint8_t steps) {
 		tileSequence[i] = tileNumber;
 		blinkTile(tileNumber);
 		_delay_ms(GAME_SPEED);
-	}
-}
-
-void blinkTile(uint8_t tileNumber) {
-	switch tileNumber {
-		case 0:
-			display.setColor(0, 255, 0);
-			display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
-			_delay_ms(GAME_SPEED);
-			display.setColor(0, 128, 0);
-			display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
-			break;
-		
-		case 1:
-			display.setColor(255, 0, 0);
-			display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
-			_delay_ms(GAME_SPEED);
-			display.setColor(128, 0, 0);
-			display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
-			break;
-		
-		case 2:
-			display.setColor(255, 255, 0);
-			display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);
-			_delay_ms(GAME_SPEED);
-			display.setColor(128, 128, 0);
-			display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);	
-			break;
-		
-		case 3:
-			display.setColor(0, 0, 255);
-			display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2);
-			_delay_ms(GAME_SPEED);
-			display.setColor(0, 0, 128);
-			display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2);
-			break;
 	}
 }
 
@@ -225,14 +227,9 @@ int main(void) {
 	SPI_Init();
 	SS_Enable;
 	
-	UTFT display;
 	display.InitLCD(LANDSCAPE);
 	display.setFont(BigFont);
 	display.clrScr();
-	
-	display.setColor(255, 250, 0);
-	
-	uint16_t pos = 0;
 	
 	drawBoard();
 
@@ -244,24 +241,4 @@ int main(void) {
 			}
 			gameOver();
 		}
-
-		/*
-		if (isTouched()) {
-			display.setColor(255, 0, 0);
-			display.fillCircle(getX(), getY(), 10);
-			delay(100);
-		}
-		
-		display.setColor(255, 250, 0);
-		display.fillRect(pos, 0, pos+19, 19);
-		if (pos > 300) {
-			pos = 0;
-			display.setColor(0, 0, 0);
-			display.fillRect(0, 0, 319, 19);
-		} else {
-			pos+=20;
-		}
-		
-		delay(100);
-		*/
 }
