@@ -108,7 +108,7 @@ void drawBoard() {
 
 void blinkTile(uint8_t tileNumber) {
 	switch (tileNumber) {
-		case 0:
+		case 1:
 		display.setColor(0, 255, 0);
 		display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
 		_delay_ms(GAME_SPEED);
@@ -116,7 +116,7 @@ void blinkTile(uint8_t tileNumber) {
 		display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
 		break;
 		
-		case 1:
+		case 2:
 		display.setColor(255, 0, 0);
 		display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
 		_delay_ms(GAME_SPEED);
@@ -124,7 +124,7 @@ void blinkTile(uint8_t tileNumber) {
 		display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
 		break;
 		
-		case 2:
+		case 3:
 		display.setColor(255, 255, 0);
 		display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);
 		_delay_ms(GAME_SPEED);
@@ -132,7 +132,7 @@ void blinkTile(uint8_t tileNumber) {
 		display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);
 		break;
 		
-		case 3:
+		case 4:
 		display.setColor(0, 0, 255);
 		display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2);
 		_delay_ms(GAME_SPEED);
@@ -191,6 +191,7 @@ int verifySequence(uint8_t steps) {
 		if ((input > 0) && (input < 5)) {
 			if (input != tileSequence[index++]) return 0;
 		}
+		_delay_ms(100);
 	}
 	return 1;
 }
