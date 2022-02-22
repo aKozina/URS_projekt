@@ -107,6 +107,7 @@ void drawBoard() {
 }
 
 void blinkTile(uint8_t tileNumber) {
+	_delay_ms(GAME_SPEED);
 	switch (tileNumber) {
 		case 1:
 		display.setColor(0, 255, 0);
@@ -151,11 +152,9 @@ void newSequence(uint8_t steps) {
 	display.setFont(BigFont);
 	display.printNumI(steps, CENTER, SCORE_Y); // Novi broj koraka
 
+	tileSequence[steps - 1] = rand() % 4 + 1; // Novi nasumični element
 	for (uint8_t i = 0; i < steps; i++) {
-		uint8_t tileNumber = rand() % 4 + 1;
-		tileSequence[i] = tileNumber;
-		blinkTile(tileNumber);
-		_delay_ms(GAME_SPEED);
+		blinkTile(tileSequence[i]);
 	}
 }
 
