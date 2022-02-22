@@ -23,6 +23,20 @@
 #define KRIUZIC_ICON_X2 329
 #define KRIUZIC_ICON_Y2 239
 
+// krizic ------------
+#define BOARD_X1 90
+#define BOARD_X2 231
+#define BOARD_Y1 43
+#define BOARD_Y2 184
+
+#define BORDER_X1 133
+#define BORDER_X2 182
+#define BORDER_Y1 86
+#define BORDER_Y2 135
+
+#define BORDER_WIDTH 6
+// --------------------
+
 #define BACK_X1 0
 #define BACK_Y1 0
 #define BACK_X2 55
@@ -64,7 +78,7 @@
 */
 uint8_t currentDisplay = 0;
 
-uint8_t tileSequence[GAME_LENGTH], highscore = 0, steps = 1;
+uint8_t tileSequence[GAME_LENGTH], highscore = 0, steps = 1, xWins = 0, oWins = 0;
 UTFT display;
 
 bool isTouched() {
@@ -117,6 +131,20 @@ void simonDrawBoard() {
 	
 	display.setFont(BigFont);
 	display.printNumI(0, CENTER, SCORE_Y);
+}
+
+void krizicDrawBoard() {
+	display.clrScr();
+
+	display.setColor(255, 255, 255);
+	display.fillRect(BORDER_X1, BOARD_Y1, BORDER_X1 + BORDER_WIDTH, BOARD_Y2);
+	display.fillRect(BORDER_X2, BOARD_Y1, BORDER_X2 + BORDER_WIDTH, BOARD_Y2);
+	display.fillRect(BORDER_Y1, BOARD_X1, BORDER_Y1 + BORDER_WIDTH, BOARD_X2);
+	display.fillRect(BORDER_Y2, BOARD_X1, BORDER_Y2 + BORDER_WIDTH, BOARD_X2);
+
+	display.print("Rezultat: X - O", HI_X, TOP_TEXT_Y);
+	display.printNumI(xWins, CENTER, SCORE_Y);
+	display.printNumI(oWins, CENTER, SCORE_Y + 6);
 }
 
 void simonBlinkTile(uint8_t tileNumber) {
@@ -268,7 +296,7 @@ int main(void) {
 			}
 			simonGameOver();
 		} else if (currentDisplay == 2) {
-			
+			krizicDrawBoard();
 		}
 		
 	}
