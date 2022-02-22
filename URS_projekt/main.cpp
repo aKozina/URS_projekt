@@ -139,8 +139,8 @@ void krizicDrawBoard() {
 	display.setColor(255, 255, 255);
 	display.fillRect(BORDER_X1, BOARD_Y1, BORDER_X1 + BORDER_WIDTH, BOARD_Y2);
 	display.fillRect(BORDER_X2, BOARD_Y1, BORDER_X2 + BORDER_WIDTH, BOARD_Y2);
-	display.fillRect(BORDER_Y1, BOARD_X1, BORDER_Y1 + BORDER_WIDTH, BOARD_X2);
-	display.fillRect(BORDER_Y2, BOARD_X1, BORDER_Y2 + BORDER_WIDTH, BOARD_X2);
+	display.fillRect(BOARD_X1, BORDER_Y1, BOARD_X2, BORDER_Y1 + BORDER_WIDTH);
+	display.fillRect(BOARD_X1, BORDER_Y2, BOARD_X2, BORDER_Y2 + BORDER_WIDTH);
 
 	display.print("Rezultat: X - O", HI_X, TOP_TEXT_Y);
 	display.printNumI(xWins, CENTER, SCORE_Y);
