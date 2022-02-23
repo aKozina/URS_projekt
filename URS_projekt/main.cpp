@@ -256,6 +256,14 @@ void simonGameOver() {
 	display.print("Kreni", CENTER, START_TEXT_Y);
 }
 
+// new game button
+void krizicNovaIgra() {
+    display.setColor(255, 255, 255); 
+    display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2); // Nova igra
+    display.setFont(SmallFont);
+    display.print("Nova igra", CENTER, START_TEXT_Y);
+}
+
 // draws board and initialises global variables
 void krizicInit() {
 
@@ -270,8 +278,8 @@ void krizicInit() {
 
 	display.print("X:", HI_X, TOP_TEXT_Y);
 	display.printNumI(xWins, HI_X + 10, TOP_TEXT_Y);
-	display.print("O:", HI_X, TOP_TEXT_Y - 20);
-	display.printNumI(oWins, HI_X + 10, TOP_TEXT_Y - 20);
+	display.print("O:", HI_X, TOP_TEXT_Y + 20);
+	display.printNumI(oWins, HI_X + 10, TOP_TEXT_Y + 20);
 
 	// init variables
 	uint8_t i, j;
@@ -423,13 +431,6 @@ void krizicGameOver() {
 	}
 
     krizicNovaIgra();
-}
-
-void krizicNovaIgra() {
-    display.setColor(255, 255, 255); 
-    display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2); // Nova igra
-    display.setFont(SmallFont);
-    display.print("Nova igra", CENTER, START_TEXT_Y);
 }
 
 // main game function
