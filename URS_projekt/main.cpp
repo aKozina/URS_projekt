@@ -259,9 +259,16 @@ void simonGameOver() {
 // new game button
 void krizicNovaIgra() {
     display.setColor(255, 255, 255); 
-    display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2); // Nova igra
+    display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2);
     display.setFont(SmallFont);
     display.print("Nova igra", CENTER, START_TEXT_Y);
+}
+
+void backButton() {
+    display.setColor(255, 255, 255); 
+    display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2);
+    display.setFont(SmallFont);
+    display.print("<", 10, TOP_TEXT_Y);
 }
 
 // draws board and initialises global variables
@@ -269,6 +276,7 @@ void krizicInit() {
 
 	// draw board
 	display.clrScr();
+    display.setFont(BigFont);
 
 	display.setColor(255, 255, 255);
 	display.fillRect(BORDER_X1, BOARD_Y1, BORDER_X1 + BORDER_WIDTH, BOARD_Y2);
@@ -276,10 +284,10 @@ void krizicInit() {
 	display.fillRect(BOARD_X1, BORDER_Y1, BOARD_X2, BORDER_Y1 + BORDER_WIDTH);
 	display.fillRect(BOARD_X1, BORDER_Y2, BOARD_X2, BORDER_Y2 + BORDER_WIDTH);
 
-	display.print("X:", HI_X, TOP_TEXT_Y);
-	display.printNumI(xWins, HI_X + 10, TOP_TEXT_Y);
-	display.print("O:", HI_X, TOP_TEXT_Y + 20);
-	display.printNumI(oWins, HI_X + 10, TOP_TEXT_Y + 20);
+	display.print("X:", HI_X + 20, TOP_TEXT_Y);
+	display.printNumI(xWins, HI_X + 40, TOP_TEXT_Y);
+	display.print("O:", HI_X + 20, TOP_TEXT_Y + 20);
+	display.printNumI(oWins, HI_X + 40, TOP_TEXT_Y + 20);
 
 	// init variables
 	uint8_t i, j;
