@@ -87,7 +87,7 @@ uint8_t currentDisplay = 0;
  */
 
 uint8_t tileSequence[GAME_LENGTH], highscore = 0, steps = 1, xWins = 0, oWins = 0, krizicEndFlag;
-char moveHistory[3][3], turn;
+char moveHistory[3][3], turn = 'O';
 UTFT display;
 
 bool isTouched() {
@@ -275,7 +275,7 @@ void krizicInit() {
 
 	// init variables
 	uint8_t i, j;
-	turn = 'X';
+	turn = turn == 'X' ? 'O' : 'X';
 	krizicEndFlag = 0;
 
 	for (i = 0; i < 3; ++i) {
@@ -302,10 +302,12 @@ uint8_t krizicCheckInput() {
 	 * 7 - Dolje lijevo
 	 * 8 - Dolje sredina
 	 * 9 - Dolje desno
+     *10 - Nova igra
 	 * 0 - Ništa od navedenog
 	 */
 
 	if ((x > BACK_X1) && (x < BACK_X2) && (y > BACK_Y1) && (y < BACK_Y2)) return -1;
+    else if ((x > BOARD_X1) && (x < BOARD_X2) && (y > START_Y1) && (y < START_Y2)) return 10;
 
 	else if ((x > BOARD_X1)                 && (x < BORDER_X1)  && (y > BORDER_Y2 + BORDER_WIDTH) && (y < BOARD_Y2)) return 1;
 	else if ((x > BORDER_X1 + BORDER_WIDTH) && (x < BORDER_X2)  && (y > BORDER_Y2 + BORDER_WIDTH) && (y < BOARD_Y2)) return 2;
@@ -344,7 +346,31 @@ uint8_t krizicVerifyInput(uint8_t input) {
 }
 
 // prints moves
-void krizicDrawInput(uint8_t input) { 			// add delay at the end
+void krizicDrawInput(uint8_t input) {
+    display.setColor(255, 255, 255);
+    display.setFont(BigFont);
+
+    uint8_t x, y;
+
+    if (input > 0 && input < 4) {           // top squares
+        y = BORDER_Y2 + BORDER_WIDTH;
+    } else if (input > 3 && input < 7) {    // middle (horizontal)
+        y = BORDER_Y1 + BORDER_WIDTH;
+    } else if (input > 6 && input < 10) {   // bottom
+        y = BOARD_Y1;
+    }
+
+    if ((input + 2) % 3 == 0) {             // left squares
+        x = BOARD_X1;
+    } else if ((input + 1) % 3 == 0) {      // middle (vertical)
+        x = BORDER_X1 + BORDER_WIDTH;
+    } else if (input % 3 == 0) {            // right
+        x = BORDER_X2 + BORDER_WIDTH;
+    }
+
+    display.print(turn, x + 14, y + 14);
+
+    _delay_ms(500);
 }
 
 // checks if game is over
@@ -377,43 +403,55 @@ void krizicCheckEndGame() {
 
 // handles game over
 void krizicGameOver() {
+    display.setColor(0, 0, 0);
+    display.fillRect(BOARD_X1, BORDER_Y1, BOARD_X2, BORDER_Y2);
+    display.setFont(SmallFont);
+
 	switch (krizicEndFlag) {
 		case 1:		//	X won
 			xWins++;
-			// printanje
+            display.print("X je pobjednik!", CENTER, BORDER_Y2 - 20);
 			break;
 		case 2:		// O won
 			oWins++;
-			// printanje
+            display.print("O je pobjednik!", CENTER, BORDER_Y2 - 20);
 			break;
 		case 3:		// tie
-			// printanje
+            display.print("Nerijeseno!", CENTER, BORDER_Y2 - 20);
 			break;
 	}
+
+
+
+    display.setColor(255, 255, 255); 
+    display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2); // Nova igra
+    display.setFont(SmallFont);
+    display.print("Nova igra", CENTER, START_TEXT_Y);
 }
 
 // main game function
 void krizicGame() {
-	krizicInit();
+    while(krizicCheckInput() == 10){
+    	krizicInit();
 
-	uint8_t input;
+    	uint8_t input;
 
-	while (!krizicEndFlag) {
-		input = krizicCheckInput();
+    	while (!krizicEndFlag) {
+    		input = krizicCheckInput();
 
-		if (input < 0) {
-			// back
-		} else if (input > 0) {
-			if (krizicVerifyInput(input)) {
-				krizicDrawInput(input);
-				krizicCheckEndGame();
-			}
+    		if (input < 0) {
+    			// back
+    		} else if (input > 0) {
+    			if (krizicVerifyInput(input)) {
+    				krizicDrawInput(input);
+    				krizicCheckEndGame();
+                    turn = turn == 'X' ? 'O' : 'X';
+    			}
+    		}
+    	}
 
-			turn = turn == 'X' ? 'O' : 'X';
-		}
-	}
-
-	krizicGameOver();
+    	krizicGameOver();
+    }
 }
 
 
