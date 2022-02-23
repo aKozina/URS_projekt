@@ -72,11 +72,11 @@
 
 
 
-/*
-*0 - MAIN MENU
-*1 - SIMON
-*2 - KRIUZIC
-*/
+/* currentDisplay
+ * 0 - MAIN MENU
+ * 1 - SIMON
+ * 2 - KRIZIC
+ */
 uint8_t currentDisplay = 0;
 
 /* krizicEndFlag
@@ -385,7 +385,8 @@ void krizicDrawInput(uint8_t input) {
         x = BORDER_X2 + BORDER_WIDTH;
     }
 
-    display.print(turn, x + 14, y + 14);
+	char trn[2] = {turn, '\0'};
+	display.print(trn, x + 14, y + 14);
 
     _delay_ms(500);
 }
@@ -424,6 +425,7 @@ void krizicGameOver() {
     display.fillRect(BOARD_X1, BORDER_Y1, BOARD_X2, BORDER_Y2);
     display.setFont(SmallFont);
 
+	display.setColor(255, 255, 255);
 	switch (krizicEndFlag) {
 		case 1:		//	X won
 			xWins++;
