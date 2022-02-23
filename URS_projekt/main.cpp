@@ -87,7 +87,7 @@ uint8_t currentDisplay = 0;
  */
 
 uint8_t tileSequence[GAME_LENGTH], highscore = 0, steps = 1, xWins = 0, oWins = 0, krizicEndFlag;
-char moveHistory[3][3], turn = 'O';
+char moveHistory[3][3], turn, firstMove = 'O';
 UTFT display;
 
 bool isTouched() {
@@ -275,7 +275,8 @@ void krizicInit() {
 
 	// init variables
 	uint8_t i, j;
-	turn = turn == 'X' ? 'O' : 'X';
+	firstMove = firstMove == 'X' ? 'O' : 'X';  // alternating first move
+    turn = firstMove;
 	krizicEndFlag = 0;
 
 	for (i = 0; i < 3; ++i) {
@@ -421,8 +422,10 @@ void krizicGameOver() {
 			break;
 	}
 
+    krizicNovaIgra();
+}
 
-
+void krizicNovaIgra() {
     display.setColor(255, 255, 255); 
     display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2); // Nova igra
     display.setFont(SmallFont);
@@ -431,16 +434,17 @@ void krizicGameOver() {
 
 // main game function
 void krizicGame() {
-    while(krizicCheckInput() == 10){
-    	krizicInit();
+    uint8_t input;
+    krizicNovaIgra();
 
-    	uint8_t input;
+    while (krizicCheckInput() == 10) {
+    	krizicInit();
 
     	while (!krizicEndFlag) {
     		input = krizicCheckInput();
 
     		if (input < 0) {
-    			// back
+    			return;
     		} else if (input > 0) {
     			if (krizicVerifyInput(input)) {
     				krizicDrawInput(input);
