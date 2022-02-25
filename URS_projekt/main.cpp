@@ -322,9 +322,9 @@ void krizicNovaIgra() {
 
 void backButton() {
     display.setColor(255, 255, 255); 
-    display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2);
+    display.drawRect(BACK_X1, BACK_Y1, BACK_X2, BACK_Y2);
     display.setFont(SmallFont);
-    display.print("<", 10, TOP_TEXT_Y);
+    display.print("<", BACK_TEXT_X, TOP_TEXT_Y);
 }
 
 // draws board and initialises global variables
@@ -485,14 +485,14 @@ void krizicGameOver() {
 	switch (krizicEndFlag) {
 		case 1:		//	X won
 			xWins++;
-            display.print("X je pobjednik!", CENTER, BORDER_Y2 - 20);
+            display.print("X je pobjednik!", CENTER, TOP_TEXT_Y);
 			break;
 		case 2:		// O won
 			oWins++;
-            display.print("O je pobjednik!", CENTER, BORDER_Y2 - 20);
+            display.print("O je pobjednik!", CENTER, TOP_TEXT_Y);
 			break;
 		case 3:		// tie
-            display.print("Nerijeseno!", CENTER, BORDER_Y2 - 20);
+            display.print("Nerijeseno!", CENTER, TOP_TEXT_Y);
 			break;
 	}
 
