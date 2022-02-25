@@ -27,19 +27,19 @@
 #define KRIUZIC_ICON_Y2 239
 // --------------------
 
-// krizic ------------
-#define BOARD_X1 90		// left edge of the board
-#define BOARD_X2 231	// right edge of the board
-#define BOARD_Y1 43		// bottom edge of the board
-#define BOARD_Y2 184	// top edge of the board
+// Krizic ploca -------
+#define BOARD_X1 90         // lijevi rub ploce
+#define BOARD_X2 231        // desni rub ploce
+#define BOARD_Y1 43         // donji rub ploce
+#define BOARD_Y2 184        // gornji rub ploce
 
-#define BORDER_X1 133	// left edge of left vertical line
-#define BORDER_X2 182	// left edge of right vertical line
-#define BORDER_Y1 86	// bottom edge of bottom horizontal line
-#define BORDER_Y2 135	// bottom edge of top horizontal line
+#define BORDER_X1 133       // lijevi rub lijeve vertikalne linije
+#define BORDER_X2 182       // lijevi rub desne vertikalne linije
+#define BORDER_Y1 86        // donji rub donje horizontalne linije
+#define BORDER_Y2 135       // donji rub gornje horizontalne linije
 
-#define BORDER_WIDTH 6
-#define SQUARE_WIDTH 43
+#define BORDER_WIDTH 6      // sirinahorizontalnih i vertikalnih linija
+#define SQUARE_WIDTH 43     // sirina kvadrata
 // --------------------
 
 // Gumb za povratak ---
@@ -314,7 +314,7 @@ void simonGame() {
 	simonGameOver(win);
 }
 
-// new game button
+// Gumb za pocetak igre
 void krizicNovaIgra() {
     display.setColor(255, 255, 255); 
     display.drawRect(BOARD_X1, START_Y1, BOARD_X2, START_Y2);
@@ -329,10 +329,10 @@ void backButton() {
     display.print("<", BACK_TEXT_X, TOP_TEXT_Y);
 }
 
-// draws board and initialises global variables
+// Crtanje ploce i iinicijalizacija varijabli
 void krizicInit() {
 
-	// draw board
+	// Crtanje ploce
 	display.clrScr();
     display.setFont(BigFont);
 
@@ -347,9 +347,9 @@ void krizicInit() {
 	display.print("O:", HI_X + 20, TOP_TEXT_Y + 20);
 	display.printNumI(oWins, HI_X + 40, TOP_TEXT_Y + 20);
 
-	// init variables
+	// Inicijalizacija varijabli
 	uint8_t i, j;
-	firstMove = firstMove == 'X' ? 'O' : 'X';  // alternating first move
+	firstMove = firstMove == 'X' ? 'O' : 'X';  // Izmjenicni prvi potez
     turn = firstMove;
 	krizicEndFlag = 0;
 
@@ -360,7 +360,7 @@ void krizicInit() {
 	}
 }
 
-// checks which square is pressed
+// Provjera koji kvadrat/gumb je pritisnut
 uint8_t krizicCheckInput() {
 	while (!isTouched());
 	uint16_t x = getX();
@@ -399,9 +399,9 @@ uint8_t krizicCheckInput() {
 	else return 0;
 }
 
-// verify that the pressed square was available
-// saves move (turn) to moveHistory
-// returns 1 if the chosen square is empty (value '0') or 0 if it is occupied (values 'X' and 'O')
+// Provjerava je li odabrani kvadrat dostupan
+// Sprema potez u moveHistory
+// Vraca 1 ako je odabrani kvadrat prazan/dostupan (vrijednost '0') ili 0 ako je zauzet (vrijednosti 'X' i 'O')
 uint8_t krizicVerifyInput(uint8_t input) {
 	uint8_t i, j, squareNum = 0;
 
@@ -420,55 +420,55 @@ uint8_t krizicVerifyInput(uint8_t input) {
 	return 0;
 }
 
-// prints moves
+// Ispisuje poteze
 void krizicDrawInput(uint8_t input) {
     display.setColor(255, 255, 255);
     display.setFont(BigFont);
 
     uint8_t x, y;
 
-    if (input > 0 && input < 4) {           // top squares
+    if (input > 0 && input < 4) {           // Gornji red kvadrata
         y = BORDER_Y2 + BORDER_WIDTH;
-    } else if (input > 3 && input < 7) {    // middle (horizontal)
+    } else if (input > 3 && input < 7) {    // Srednji red
         y = BORDER_Y1 + BORDER_WIDTH;
-    } else if (input > 6 && input < 10) {   // bottom
+    } else if (input > 6 && input < 10) {   // Donji red
         y = BOARD_Y1;
     }
 
-    if ((input + 2) % 3 == 0) {             // left squares
+    if ((input + 2) % 3 == 0) {             // Lijevi stupac
         x = BOARD_X1;
-    } else if ((input + 1) % 3 == 0) {      // middle (vertical)
+    } else if ((input + 1) % 3 == 0) {      // Srednji stupac
         x = BORDER_X1 + BORDER_WIDTH;
-    } else if (input % 3 == 0) {            // right
+    } else if (input % 3 == 0) {            // Desni stupac
         x = BORDER_X2 + BORDER_WIDTH;
     }
 
 	char trn[2] = {turn, '\0'};
 	display.print(trn, x + 14, y + 14);
 
-    _delay_ms(500);
+    _delay_ms(500);     // Debounce cekanjem
 }
 
-// checks if game is over
+// Provjerava je li igra gotova
 void krizicCheckEndGame() {
 	uint8_t i, j;
 	
-	if (moveHistory[0][0] == moveHistory[0][1] && moveHistory[0][0] == moveHistory[0][2] && moveHistory[0][0] != '0' ||	// rows
+	if (moveHistory[0][0] == moveHistory[0][1] && moveHistory[0][0] == moveHistory[0][2] && moveHistory[0][0] != '0' ||	// Retci
 		moveHistory[1][0] == moveHistory[1][1] && moveHistory[1][0] == moveHistory[1][2] && moveHistory[1][0] != '0' ||
 		moveHistory[2][0] == moveHistory[2][1] && moveHistory[2][0] == moveHistory[2][2] && moveHistory[2][0] != '0' ||
 
-		moveHistory[0][0] == moveHistory[1][0] && moveHistory[0][0] == moveHistory[2][0] && moveHistory[0][0] != '0' ||	// columns
+		moveHistory[0][0] == moveHistory[1][0] && moveHistory[0][0] == moveHistory[2][0] && moveHistory[0][0] != '0' ||	// Stupci
 		moveHistory[0][1] == moveHistory[1][1] && moveHistory[0][1] == moveHistory[2][1] && moveHistory[0][1] != '0' ||
 		moveHistory[0][2] == moveHistory[1][2] && moveHistory[0][2] == moveHistory[2][2] && moveHistory[0][2] != '0' ||
 
-		moveHistory[0][0] == moveHistory[1][1] && moveHistory[0][0] == moveHistory[2][2] && moveHistory[0][0] != '0' ||	// diagonals
+		moveHistory[0][0] == moveHistory[1][1] && moveHistory[0][0] == moveHistory[2][2] && moveHistory[0][0] != '0' ||	// Dijagonale
 		moveHistory[0][2] == moveHistory[1][1] && moveHistory[0][2] == moveHistory[2][0] && moveHistory[0][2] != '0'){
-		
-		// only the last player to make a move can win
+
+		// Samo igrac koji je zadnji odigrao potez moze pobijediti
 		krizicEndFlag = turn == 'X' ? 1 : 2;
 	}
 
-	// checks if it's a tie (all squares will be used, but there won't be a winner)
+	// Provjerava je li nerijeseno (svi kvadrati su iskoristeni, a nema pobjednika)
 	for (i = 0; i < 3; ++i) {
 		for (j = 0; j < 3; ++j) {
 			if (moveHistory[i][j] == '0') return;
@@ -477,7 +477,7 @@ void krizicCheckEndGame() {
 	krizicEndFlag = 3;
 }
 
-// handles game over
+// Ispisuje poruku kad igra zavrsi i broji pobjede
 void krizicGameOver() {
     display.setColor(0, 0, 0);
     display.fillRect(BOARD_X1, BORDER_Y1, BOARD_X2, BORDER_Y2);
@@ -485,15 +485,15 @@ void krizicGameOver() {
 
 	display.setColor(255, 255, 255);
 	switch (krizicEndFlag) {
-		case 1:		//	X won
+		case 1:		//	X je pobjednik
 			xWins++;
             display.print("X je pobjednik!", CENTER, TOP_TEXT_Y);
 			break;
-		case 2:		// O won
+		case 2:		// O je pobjednik
 			oWins++;
             display.print("O je pobjednik!", CENTER, TOP_TEXT_Y);
 			break;
-		case 3:		// tie
+		case 3:		// Nerijeseno
             display.print("Nerijeseno!", CENTER, TOP_TEXT_Y);
 			break;
 	}
@@ -501,7 +501,7 @@ void krizicGameOver() {
     krizicNovaIgra();
 }
 
-// main game function
+// Glavna funkcija za krizic kruzic
 void krizicGame() {
     uint8_t input;
     krizicNovaIgra();
@@ -512,7 +512,7 @@ void krizicGame() {
     	while (!krizicEndFlag) {
     		input = krizicCheckInput();
 
-    		if (input < 0) {
+    		if (input < 0) {  // Pritisnut je gumb za povratak
     			return;
     		} else if (input > 0) {
     			if (krizicVerifyInput(input)) {
