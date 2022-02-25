@@ -11,9 +11,12 @@
 #include "AVR_UTFT/DefaultFonts.h"
 #include "SPI_Master_H_file.h"
 
+// Postavke igre ------
 #define GAME_SPEED 700
-#define GAME_LENGTH 255
+#define GAME_LENGTH 100
+// --------------------
 
+// Izbornik -----------
 #define SIMON_ICON_X1 0
 #define SIMON_ICON_Y1 0
 #define SIMON_ICON_X2 159
@@ -22,6 +25,7 @@
 #define KRIUZIC_ICON_Y1 0
 #define KRIUZIC_ICON_X2 329
 #define KRIUZIC_ICON_Y2 239
+// --------------------
 
 // krizic ------------
 #define BOARD_X1 90		// left edge of the board
@@ -38,11 +42,15 @@
 #define SQUARE_WIDTH 43
 // --------------------
 
+// Gumb za povratak ---
 #define BACK_X1 0
 #define BACK_Y1 0
 #define BACK_X2 55
 #define BACK_Y2 30
+#define BACK_TEXT_X 10
+// --------------------
 
+// Simon kvadrati -----
 #define GREEN_X1 87
 #define GREEN_Y1 40
 #define GREEN_X2 157
@@ -59,24 +67,27 @@
 #define BLUE_Y1 116
 #define BLUE_X2 233
 #define BLUE_Y2 186
+// --------------------
 
+// Start gumb ---------
 #define START_Y1 196
 #define START_Y2 229
 #define START_TEXT_Y 208
+// --------------------
 
+// Ostalo -------------
 #define SCORE_Y 16
-
 #define TOP_TEXT_Y 10
 #define HI_X 258
 #define HI_NUM_X 303
-
-
+// --------------------
 
 /* currentDisplay
  * 0 - MAIN MENU
  * 1 - SIMON
  * 2 - KRIZIC
  */
+
 uint8_t currentDisplay = 0;
 
 /* krizicEndFlag
@@ -115,37 +126,49 @@ uint16_t getY() {
 	return (uint16_t)y;
 }
 
+// Crtanje Simon says komponenti
 void simonDrawBoard() {
 	display.clrScr();
 
+	// Zelena plocica
 	display.setColor(0, 191, 0);
-	display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2); // Zelena pločica
-
+	display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2); 
+	
+	// Crvena plocica	
 	display.setColor(191, 0, 0);
-	display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2); // Crvena pločica
+	display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2); 
 
+	// Žuta plocica
 	display.setColor(191, 191, 0);
-	display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2); // Žuta pločica
+	display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2); 
 
+	// Plava plocica
 	display.setColor(0, 0, 191);
-	display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2); // Plava pločica
+	display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2); 
 
+	// Start gumb sirine igracih plocica
 	display.setColor(255, 255, 255); 
-	display.drawRect(GREEN_X1, START_Y1, RED_X2, START_Y2); // Start gumb širine igraćih pločica
+	display.drawRect(GREEN_X1, START_Y1, RED_X2, START_Y2); 
 	display.setFont(SmallFont);
 	display.print("Kreni", CENTER, START_TEXT_Y);
 
+	// Highscore prikaz
 	display.print("Rekord:", HI_X, TOP_TEXT_Y);
 	display.printNumI(highscore, HI_NUM_X, TOP_TEXT_Y);
+
+	// Gumb za povratak
+	display.print("Natrag", BACK_TEXT_X, TOP_TEXT_Y);
 	
+	// Prikaz broja koraka
 	display.setFont(BigFont);
 	display.printNumI(0, CENTER, SCORE_Y);
 }
 
+// Blinkanje plocica
 void simonBlinkTile(uint8_t tileNumber) {
 	_delay_ms(GAME_SPEED);
 	switch (tileNumber) {
-		case 1:
+		case 1: // Zelena
 		display.setColor(0, 255, 0);
 		display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
 		_delay_ms(GAME_SPEED);
@@ -153,7 +176,7 @@ void simonBlinkTile(uint8_t tileNumber) {
 		display.fillRect(GREEN_X1, GREEN_Y1, GREEN_X2, GREEN_Y2);
 		break;
 		
-		case 2:
+		case 2: // Crvena
 		display.setColor(255, 0, 0);
 		display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
 		_delay_ms(GAME_SPEED);
@@ -161,7 +184,7 @@ void simonBlinkTile(uint8_t tileNumber) {
 		display.fillRect(RED_X1, RED_Y1, RED_X2, RED_Y2);
 		break;
 		
-		case 3:
+		case 3: // Zuta
 		display.setColor(255, 255, 0);
 		display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);
 		_delay_ms(GAME_SPEED);
@@ -169,7 +192,7 @@ void simonBlinkTile(uint8_t tileNumber) {
 		display.fillRect(YELLOW_X1, YELLOW_Y1, YELLOW_X2, YELLOW_Y2);
 		break;
 		
-		case 4:
+		case 4: // Plava
 		display.setColor(0, 0, 255);
 		display.fillRect(BLUE_X1, BLUE_Y1, BLUE_X2, BLUE_Y2);
 		_delay_ms(GAME_SPEED);
@@ -179,34 +202,37 @@ void simonBlinkTile(uint8_t tileNumber) {
 	}
 }
 
-
+// Novi level
 void simonNewLevel(uint8_t steps) {
+	// Azuriranje broja koraka
 	display.setColor(0, 0, 0);
-	display.fillRect(GREEN_X1 - 5, 0, RED_X2 + 5, RED_Y1 - 1); // Brisanje prethodnog broja koraka
-
+	display.fillRect(GREEN_X1 - 5, 0, RED_X2 + 5, RED_Y1 - 1); 
 	display.setColor(255, 255, 255); 
 	display.setFont(BigFont);
-	display.printNumI(steps, CENTER, SCORE_Y); // Novi broj koraka
+	display.printNumI(steps, CENTER, SCORE_Y);
 
-	tileSequence[steps - 1] = rand() % 4 + 1; // Novi nasumični element
+	tileSequence[steps - 1] = rand() % 4 + 1; // Novi nasumicni element
+	
+	// Blinkanje cijelog niza
 	for (uint8_t i = 0; i < steps; i++) {
 		simonBlinkTile(tileSequence[i]);
 	}
 }
 
+// Provjera sto je pritisnuto
 int simonCheckInput() {
 	while (!isTouched());
 	uint16_t x = getX();
 	uint16_t y = getY();
 
 	/* 
-	 *-1 - Gumb za povratak
-	 * 1 - Zelena pločica
-	 * 2 - Crvena pločica
-	 * 3 - Žuta pločica
-	 * 4 - Plava pločica
-	 * 5 - Start gumb
-	 * 0 - Ništa od navedenog
+	 *-1 - Povratak
+	 * 1 - Zelena plocica
+	 * 2 - Crvena plocica
+	 * 3 - Zuta plocica
+	 * 4 - Plava plocica
+	 * 5 - Start
+	 * 0 - Nista od navedenog
 	 */
 
 	if ((x > BACK_X1) && (x < BACK_X2) && (y > BACK_Y1) && (y < BACK_Y2)) return -1;
@@ -216,44 +242,74 @@ int simonCheckInput() {
 	else if ((x > BLUE_X1) && (x < BLUE_X2) && (y > BLUE_Y1) && (y < BLUE_Y2)) return 4;
 	else if ((x > GREEN_X1) && (x < RED_X2) && (y > START_Y1) && (y < START_Y2)) return 5;
 	else return 0;
-	
 }
 
+// Provjera ispravnosti unesenog niza
 int simonVerifySequence(uint8_t steps) {
 	uint8_t input, index = 0;
+
 	while (index < steps) {
 		input = simonCheckInput();
 		if ((input > 0) && (input < 5)) {
 			if (input != tileSequence[index++]) return 0;
 		}
-		_delay_ms(100);
+		_delay_ms(100); // Debounce cekanjem
 	}
 	return 1;
 }
 
+// Inicijalizacija igre Simon says
 void simonStart() {
 	steps = 1;
+	// Brisanje Start gumba
 	display.setColor(0, 0, 0);
-	display.fillRect(GREEN_X1, START_Y1, RED_X2, START_Y2); // Brisanje Start gumba
+	display.fillRect(GREEN_X1, START_Y1, RED_X2, START_Y2); 
 	_delay_ms(500);
-	simonNewLevel(1);
+	simonNewLevel(1); // Dodavanje prvog elementa u niz
 }
 
-void simonGameOver() {
+// Kraj igre Simon says
+void simonGameOver(uint8_t win) {
+	// Azuriranje highscora
 	display.setColor(0, 0, 0);
 	if (steps - 1 > highscore) {
 		highscore = steps - 1;
 		display.fillRect(HI_NUM_X - 1, TOP_TEXT_Y - 2, 319, TOP_TEXT_Y + 15);
 		display.printNumI(highscore, HI_NUM_X, TOP_TEXT_Y);
 	}
+
+	// Ispis poruke o kraju igre
 	display.fillRect(GREEN_X1 - 5, 0, RED_X2 + 5, RED_Y1 - 1);
 	display.setFont(SmallFont);
-	display.print("Pogresno! Pokusaj ponovo.", CENTER, SCORE_Y);
+	if (win) {
+		display.print("Pobjeda!", CENTER, SCORE_Y);
+	} else {
+		display.print("Pogresno! Pokusaj ponovo.", CENTER, SCORE_Y);
+	}
 
+	// Prikaz start gumba
 	display.setColor(255, 255, 255); 
-	display.drawRect(GREEN_X1, START_Y1, RED_X2, START_Y2); // Start gumb
+	display.drawRect(GREEN_X1, START_Y1, RED_X2, START_Y2);
 	display.setFont(SmallFont);
 	display.print("Kreni", CENTER, START_TEXT_Y);
+}
+
+// Izvodenje igre
+void simonGame() {
+	uint8_t win = 0;
+	simonDrawBoard();
+	while (simonCheckInput() != 5);
+	simonStart();
+	while (simonVerifySequence(steps)) {
+		++steps;
+		if (steps > GAME_LENGTH) {
+			win = 1;
+			break;
+		} else {
+			simonNewLevel(steps);
+		}
+	}
+	simonGameOver(win);
 }
 
 // new game button
@@ -469,7 +525,6 @@ void krizicGame() {
     }
 }
 
-
 void openGame() {
 	uint16_t x = getX();
 	uint16_t y = getY();
@@ -497,13 +552,7 @@ int main(void) {
 			while (!isTouched());
 			openGame();
 		} else if (currentDisplay == 1) {
-			simonDrawBoard();
-			while (simonCheckInput() != 5);
-			simonStart();
-			while (simonVerifySequence(steps)) {
-				simonNewLevel(++steps);
-			}
-			simonGameOver();
+			simonGame();
 		} else if (currentDisplay == 2) {
 			krizicGame();
 		}
