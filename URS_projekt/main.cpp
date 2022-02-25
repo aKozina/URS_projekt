@@ -252,7 +252,9 @@ int simonVerifySequence(uint8_t steps) {
 		input = simonCheckInput();
 		if ((input > 0) && (input < 5)) {
 			if (input != tileSequence[index++]) return 0;
-		}
+		} else if(input < 0){
+            return 0;
+        }
 		_delay_ms(100); // Debounce cekanjem
 	}
 	return 1;
